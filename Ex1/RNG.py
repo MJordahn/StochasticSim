@@ -5,9 +5,8 @@ from scipy.stats import chi2
 from scipy.stats import norm
 
 #########################################################
-
 def LCG(x, a, c, M):
-    "Generates a random number using LCG"
+    #Generates a random number using LCG
     x_i = (a*x+c)%M
     return x_i
 
@@ -22,7 +21,7 @@ def runSim(seed, a, c, M, p):
 
     if True:
         plt.hist(x, range(int(M)+1))
-        
+
     return(x)
 
 def countOcc(lst, M):
@@ -69,7 +68,7 @@ p=True
 
 x1 = runSim(seed, a, c, M, p)
 U1 = x1/M
-x1[0:14] #The period is 13 - Full cycle length. See slide 
+print(x1[0:14]) #The period is 13 - Full cycle length. See slide
 #We see, that not all values are simulated.
 
 
@@ -82,7 +81,7 @@ p=True
 
 x2 = runSim(seed, a, c, M, p)
 U2= x2/M
-x2[0:14] #The period is 12
+print(x2[0:14]) #The period is 12
 
 #Is is possible to create full cycle with M=20? No -since mod(a,4)=1 \imples mod(a,5) \neq 1
 

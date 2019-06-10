@@ -17,6 +17,18 @@ p = 0.2
 U = np.random.rand(n)
 
 ###########################################################
+
+def setup_Alias(F):
+    smaller = []
+    larger = []
+    for i, prob in enumerate(F):
+        if prob < 1.0:
+            smaller.append(i)
+        else:
+            larger.append(i)
+    return smaller, larger
+
+###########################################################
 #Geometric distribution:
 
 def f_n(n,p):
@@ -25,7 +37,7 @@ def f_n(n,p):
 
 X1 = np.floor(np.log(U)*(1.0/np.log(1-p))) + np.ones(n)
 
-plt.hist(X1, 20)
+#plt.hist(X1, 20)
 
 ###########################################################
 # Simulation of a 6-point distribution:
@@ -55,13 +67,36 @@ for i in range(len(U)):
     p = P_i[I-1]
     if (U2[i]< p/c):
         X3 = np.append(X3,I)
-        
-plt.hist(X3)
 
+#plt.hist(X3)
 # Alias sampling:
 U2 = np.random.rand(n)
 X3 = np.zeros(n)
-I_list=1+np.floor(6*U)
+I_list=np.floor(6*U)
+L = list(range(1,7))
+F = [p * 6 for p in P_i]
+S, G = setup_Alias(F)
+while len(S)!=0:
+    k = G[0]
+    j = S[0]
+    L[j] = k
+    F[k] = F[k] - (1-F[j])
+    del S[0]
+    if F[k] < 1:
+        del G[0]
+        S.append(k)
+
+print(F)
+print(L)
+print(I_list)
+for i, u in enumerate(U2):
+    if u <= F[int(I_list[i])]:
+        X3 = int(I_list[i])
+    else:
+        X3 = L[int(I_list[i])]
+plt.hist(X3)
+plt.show()
+
 
 
 ### To be continued ######
