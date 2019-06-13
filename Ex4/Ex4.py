@@ -38,33 +38,33 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
             time = next_event[0]
             if next_event[1] == "a":
 
-                for i, occupied in enumerate(service_unit):
+                for k, occupied in enumerate(service_unit):
                     if occupied == False:
                         if service == "exponential":
                             new_end_time = time + np.random.exponential(scale=_service_time)
-                            bisect.insort_left(event_list,(new_end_time, 'd', i))
-                            service_unit[i] = True
+                            bisect.insort_left(event_list,(new_end_time, 'd', k))
+                            service_unit[k] = True
                             break
                         elif service == "constant":
                             new_end_time = time + _service_time
-                            bisect.insort_left(event_list,(new_end_time, 'd', i))
-                            service_unit[i] = True
+                            bisect.insort_left(event_list,(new_end_time, 'd', k))
+                            service_unit[k] = True
                             break
                         elif service == "pareto1":
                             shape = 1.05
                             scale = _service_time*(shape-1)/shape
                             new_end_time = time + (np.random.pareto(shape)+1)*scale
-                            bisect.insort_left(event_list,(new_end_time, 'd', i))
-                            service_unit[i] = True
+                            bisect.insort_left(event_list,(new_end_time, 'd', k))
+                            service_unit[k] = True
                             break
                         elif service == "pareto2":
                             shape = 2.05
                             scale = _service_time*(shape-1)/shape
                             new_end_time = time + (np.random.pareto(shape)+1)*scale
-                            bisect.insort_left(event_list,(new_end_time, 'd', i))
-                            service_unit[i] = True
+                            bisect.insort_left(event_list,(new_end_time, 'd', k))
+                            service_unit[k] = True
                             break
-                    elif i == len(service_unit)-1 and customers>burn:
+                    elif k == len(service_unit)-1 and customers>burn:
                         blocked = blocked + 1
                 new_sample = 0
                 if arrival == "poisson":
