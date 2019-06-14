@@ -21,8 +21,9 @@ def probabilities(array, n):
 def main():
     _lambda = 1
     _mean_service_time = 8
+    s_nr = 10
     A = 1*8
-    n = 10000
+    n = 100
     states = [1]
     for i in range(0, n-1):
         accept = False
@@ -36,8 +37,9 @@ def main():
         g_x = A**states[-1]/math.factorial(states[-1])
         g_y = A**y/math.factorial(y)
         rnd = random.random()
-        if g_y/g_x > rnd:
-            accept = True
+
+        accept = (g_y/g_x > rnd)
+
         if accept:
             states.append(y)
         else:
@@ -45,12 +47,20 @@ def main():
 
     plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], probabilities(states,n))
     plt.show()
-    sampled_walk = [1]
-    #for i in range(0, n-1):
-    #    sampled_walk.append(sampled_walk[-1] + np.random.poisson(lam=_lambda))
-    print(states)
-    #print(sampled_walk)
-    print(chisquare(states, f_exp=sampled_walk))
+
+    stations = []
+    station_sum = 0
+    for i in range(s_nr+1):
+        station_sum += A ** i / math.factorial(i)
+
+    for i in range(s_nr+1):
+        stations.append((A ** i / math.factorial(i)) / station_sum)
+
+
+    plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stations)
+    plt.show()
+
+    print(chisquare(probabilities(states,n), f_exp=stations))
 
 if __name__ == "__main__":
     main()
