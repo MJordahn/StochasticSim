@@ -16,7 +16,7 @@ from scipy.stats import t
 ###############################################################
 
 # We estimate the integral showed using crude monte carlo simulation:
-n=100
+n=1000
 U = np.random.rand(n)
 
 X = math.e**U
@@ -29,7 +29,7 @@ mu_lower = X_mu + t.ppf(0.025, n-1)*s
 
 print("-----------Using crude monte carlo-----------")
 print("The mean is estimated to: " + str(X_mu))
-print("The var is estimated to: " + str(X_mu))
+print("The var is estimated to: " + str(X_var))
 print("Confidence interval: [" + str(mu_lower) + ", " + str(mu_upper) +"]")
 print("Theoretical value: " + str(math.e-1))
 print(" ")
