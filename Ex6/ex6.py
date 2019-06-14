@@ -9,14 +9,14 @@ def main():
     _lambda = 1
     _mean_service_time = 8
     A = 1*8
-    n = 1000
+    n = 5
     states = [0]
     for i in range(0, n):
         accept = False
-        sample = np.random.normal(loc=0, scale=1)
-        y = states[-1] + A**states[-1]/math.factorial(states[-1])
+        sample = np.random.beta(a=0, b=1)
+        y = states[-1] + sample
         g_x = A**states[-1]/math.factorial(states[-1])
-        g_y = A**y/math.factorial(y)
+        g_y = A**y/math.factorial(math.floor(y))
         if g_y >= g_x:
             accept = True
         else:
@@ -28,7 +28,7 @@ def main():
         else:
             states.append(x)
     true_samples = np.random.poisson(lam=_lambda)
-
+    print(states)
 
 if __name__ == "__main__":
     main()
