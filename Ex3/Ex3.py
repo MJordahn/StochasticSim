@@ -44,10 +44,10 @@ P3=Pareto(1, 3.0, U1)
 P4=Pareto(1, 4.0, U1)
 
 #Theoretical distribution
-P1_T = np.random.pareto(2.05, n)
-P2_T = np.random.pareto(2.5, n)
-P2_T = np.random.pareto(3.0, n)
-P3_T = np.random.pareto(4.0, n)
+P1_T = np.random.pareto(2.05, n)+np.ones(n)
+P2_T = np.random.pareto(2.5, n)+np.ones(n)
+P3_T = np.random.pareto(3.0, n)+np.ones(n)
+P4_T = np.random.pareto(4.0, n)+np.ones(n)
 
 # Theoretical mean and variance:
 
