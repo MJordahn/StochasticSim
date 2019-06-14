@@ -27,7 +27,7 @@ def main():
             states.append(y)
         else:
             states.append(x)
-
+    true_samples = np.random.poisson(lam=_lambda)
 
 
 if __name__ == "__main__":

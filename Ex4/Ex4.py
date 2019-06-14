@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import math
 from scipy.stats import t
+from scipy.stats import poisson
 import random
 import bisect
 
@@ -18,16 +19,17 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
         blocked = 0
         time = 0
         if arrival == "poisson":
-            new_sample = np.random.poisson(lam=_lambda)
+            new_sample = np.random.exponential(scale=_lambda)
+            #new_sample = poisson.rvs(mu=_lambda)
         elif arrival == "erlang":
             shape = 3
-            new_sample = np.random.gamma(shape = shape, scale=1/shape)
+            new_sample = np.random.gamma(shape = shape, scale=1.0/shape)
         elif arrival == "hyperexponential":
             rand = random.random()
             if rand < 0.8:
-                new_sample = np.random.exponential(scale=1/0.8333)
+                new_sample = np.random.exponential(scale=1.0/0.8333)
             else:
-                new_sample = np.random.exponential(scale=1/5)
+                new_sample = np.random.exponential(scale=1.0/5)
         arrival_time = new_sample
         event_list.append((arrival_time, 'a', None))
         customers = 1
@@ -52,14 +54,14 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
                             break
                         elif service == "pareto1":
                             shape = 1.05
-                            scale = _service_time*(shape-1)/shape
+                            scale = float(_service_time)*float((shape-1))/float(shape)
                             new_end_time = time + (np.random.pareto(shape)+1)*scale
                             bisect.insort_left(event_list,(new_end_time, 'd', k))
                             service_unit[k] = True
                             break
                         elif service == "pareto2":
                             shape = 2.05
-                            scale = _service_time*(shape-1)/shape
+                            scale = float(_service_time)*float((shape-1))/float(shape)
                             new_end_time = time + (np.random.pareto(shape)+1)*scale
                             bisect.insort_left(event_list,(new_end_time, 'd', k))
                             service_unit[k] = True
@@ -68,7 +70,8 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
                         blocked = blocked + 1
                 new_sample = 0
                 if arrival == "poisson":
-                    new_sample = np.random.poisson(lam=_lambda)
+                    new_sample = np.random.exponential(scale=_lambda)
+                    #new_sample = poisson.rvs(mu=_lambda)
                 elif arrival == "erlang":
                     shape = 3
                     new_sample = np.random.gamma(shape = shape, scale=1/shape)
@@ -82,7 +85,6 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
                     new_sample = np.random.chisquare(df=1)
                 new_arrival_time = time + new_sample
                 bisect.insort_right(event_list, (new_arrival_time, 'a', None))
-
                 customers=customers+1
             elif next_event[1] == 'd':
                 service_unit[next_event[2]] = False
@@ -91,14 +93,14 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
     theta_bar = 0
     for theta in theta_hats:
         theta_bar = theta + theta_bar
-    theta_bar = theta_bar/runtimes
+    theta_bar = float(theta_bar)/float(runtimes)
     sum_hats = 0
     for theta in theta_hats:
         sum_hats = sum_hats + theta**2
-    std = math.sqrt(1/(runtimes-1)*(sum_hats-theta_bar**2*runtimes))
+    std = math.sqrt(1.0/(runtimes-1)*(sum_hats-theta_bar**2*runtimes))
     sqrt_n = math.sqrt(int(runtimes))
-    lower_bound_confidence = theta_bar + std/sqrt_n*t.ppf(0.05, df=runtimes-1)*(runtimes-1)
-    upper_bound_confidence = theta_bar + std/sqrt_n*t.ppf(0.95, df=runtimes-1)*(runtimes-1)
+    lower_bound_confidence = theta_bar + std/sqrt_n*t.ppf(0.025, df=runtimes-1)
+    upper_bound_confidence = theta_bar + std/sqrt_n*t.ppf(0.975, df=runtimes-1)
     sum_theoretical = 0
     A = _lambda*_service_time
     for i in range (0, int(sys.argv[2])+1):
