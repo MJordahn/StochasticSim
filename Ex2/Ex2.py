@@ -46,7 +46,7 @@ def setup_Alias(F):
     smaller = []
     larger = []
     for i, prob in enumerate(F):
-        if prob < 1.0:
+        if prob <= 1.0:
             smaller.append(i)
         else:
             larger.append(i)
@@ -112,7 +112,7 @@ for element in zipped:
     if element[1] != 0:
         chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
 
-print("P value for rejection method: " + str(1.0-chi2.cdf(chi2sum, 5)))
+print("P value for crude method: " + str(1.0-chi2.cdf(chi2sum, 5)))
 
 # Rejection sampling. Note that not 10000 samples are made.:
 c= 0.33
@@ -127,6 +127,48 @@ for i in range(len(U)):
         X3 = np.append(X3,I)
 
 X3 = probabilities_6point(X3,len(X3))
+# plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
+# plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
+# plt.xlabel("Point class")
+# plt.ylabel("Probability")
+# plt.legend()
+# plt.show()
+
+chi2sum = 0
+zipped = zip(X3, P_i)
+for element in zipped:
+    if element[1] != 0:
+        chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
+
+print("P value for rejection method: " + str(1.0-chi2.cdf(chi2sum, 5)))
+
+# Alias sampling:
+U = np.random.rand(n)
+U2 = np.random.rand(n)
+I_list= np.floor(6*U)+1
+L = list(range(1,7))
+F = [p * 6 for p in P_i]
+S, G = setup_Alias(F)
+while len(S)!=0:
+    k = G[0]
+    j = S[0]
+    L[j] = k
+    F[k] = F[k] - (1-F[j])
+
+    if F[k] < 1:
+        S.append(k)
+        del G[0]
+    del S[0]
+
+zipped = zip(U2, I_list)
+X3 = []
+for element in zipped:
+    if element[0] < F[int(element[1])-1]:
+        X3.append(int(element[1]))
+    else:
+        X3.append(L[int(element[1])-1])
+print(X3)
+X3 = probabilities_6point(X3,len(X3))
 plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
 plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
 plt.xlabel("Point class")
@@ -140,32 +182,8 @@ for element in zipped:
     if element[1] != 0:
         chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
 
-print("P value for crude method: " + str(1.0-chi2.cdf(chi2sum, 5)))
+print("P value for alias method: " + str(1.0-chi2.cdf(chi2sum, 5)))
 
-# Alias sampling:
-U2 = np.random.rand(n)
-X3 = np.zeros(n)
-I_list=np.floor(6*U)
-L = list(range(1,7))
-F = [p * 6 for p in P_i]
-S, G = setup_Alias(F)
-while len(S)!=0:
-    k = G[0]
-    j = S[0]
-    L[j] = k
-    F[k] = F[k] - (1-F[j])
-    del S[0]
-    if F[k] < 1:
-        del G[0]
-        S.append(k)
-
-for i, u in enumerate(U2):
-    if u <= F[int(I_list[i])]:
-        X3 = int(I_list[i])
-    else:
-        X3 = L[int(I_list[i])]
-plt.hist(X3)
-plt.show()
 
 
 
