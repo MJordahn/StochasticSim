@@ -21,7 +21,7 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
         service_unit = [False]*int(sys.argv[2])
         event_list = []
         new_sample = 0
-        if arrival == "poisson":
+        if arrival == "exponential":
             new_sample = np.random.exponential(scale=_lambda)
         elif arrival == "erlang":
             shape = 3
@@ -62,7 +62,7 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
                     elif i == len(service_unit)-1:
                         blocked = blocked + 1
                 new_sample = 0
-                if arrival == "poisson":
+                if arrival == "exponential":
                     new_sample = np.random.exponential(scale=_lambda)
                 elif arrival == "erlang":
                     shape = 3
@@ -99,8 +99,10 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
     for i in range (0, int(sys.argv[2])+1):
         sum_theoretical = sum_theoretical + A**i/math.factorial(i)
     theoretical_fraction = A**int(sys.argv[2])/math.factorial(int(sys.argv[2]))/sum_theoretical
-    
+
+    ##################################################################################
     # Utilizing control variates:
+    ##################################################################################
     n=runtimes
     m=offered_traffic
     U=_service_time_estimates
@@ -119,19 +121,8 @@ def simulation(_lambda, _service_time, runtimes, arrival, service):
     lower_bound_c = theta_bar_c + std_c/sqrt_n*t.ppf(0.025, df=n-1)
     upper_bound_c = theta_bar_c + std_c/sqrt_n*t.ppf(0.975, df=n-1)
 
-    #U_var = (1.0/(n-1)) * sum(np.array(U)**2)-n*U_mu**2
-    # U_var = (1.0/10000)*(8.0**2)
-    #
-    # cov = (1.0/(n-1))*(np.matmul(theta_hats-theta_bar*np.ones(n), U-U_mu*np.ones(n)))
-    # c_opt = -cov/(U_var)
-    # theta_hats_c = theta_hats + c_opt*(U-U_mu*np.ones(n))
-    # theta_bar_c = np.average(theta_hats_c)
-    # sqrt_n = math.sqrt(int(n))
-    #
-    # std_c = math.sqrt(1.0/(n-1.0) * (sum(theta_hats_c**2.0)-n*theta_bar_c**2))
-    # lower_bound_c = theta_bar_c + std_c/sqrt_n*t.ppf(0.025, df=n-1)*(n-1)
-    # upper_bound_c = theta_bar_c + std_c/sqrt_n*t.ppf(0.975, df=n-1)*(n-1)
-    
+    ######################################################################################
+
     return theta_bar_c, theoretical_fraction, std_c, std, lower_bound_c, upper_bound_c
 
 def main():
@@ -139,9 +130,9 @@ def main():
     _service_time = 8
     runtimes = 10
 
-    theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "poisson", "exponential")
+    theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "exponential", "exponential")
 
-    print("-------------------Poisson arrival and exponential service-------------------")
+    print("-------------------Exponential arrival and exponential service-------------------")
     print("Estimator: " + str(theta_bar))
     print("Theoretical fraction: " + str(theoretical_fraction))
     print("Standard deviation control: " + str(std_c))
@@ -152,27 +143,27 @@ def main():
 
     #Variance 1 and mean 1
 
-    theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "erlang", "exponential")
+    #theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "erlang", "exponential")
 
-    print("-------------------Erlang arrival and exponential service--------------------")
-    print("Estimator: " + str(theta_bar))
-    print("Standard deviation control: " + str(std_c))
-    print("Standard deviation: " + str(std))
-    print("Lower bound: " + str(lower_bound_confidence))
-    print("Upper bound: " + str(upper_bound_confidence))
-    print("-----------------------------------------------------------------------------\n\n")
+    #print("-------------------Erlang arrival and exponential service--------------------")
+    #print("Estimator: " + str(theta_bar))
+    #print("Standard deviation control: " + str(std_c))
+    #print("Standard deviation: " + str(std))
+    #print("Lower bound: " + str(lower_bound_confidence))
+    #print("Upper bound: " + str(upper_bound_confidence))
+    #print("-----------------------------------------------------------------------------\n\n")
 
     #Variance 1/5 and mean 1
 
-    theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "hyperexponential", "exponential")
+    #theta_bar, theoretical_fraction, std_c, std, lower_bound_confidence, upper_bound_confidence =  simulation(_lambda, _service_time, runtimes, "hyperexponential", "exponential")
 
-    print("-------------------Hyperexponential arrival and exponential service--------------------")
-    print("Estimator: " + str(theta_bar))
-    print("Standard deviation control: " + str(std_c))
-    print("Standard deviation: " + str(std))
-    print("Lower bound: " + str(lower_bound_confidence))
-    print("Upper bound: " + str(upper_bound_confidence))
-    print("---------------------------------------------------------------------------------------\n\n")
+    #print("-------------------Hyperexponential arrival and exponential service--------------------")
+    #print("Estimator: " + str(theta_bar))
+    #print("Standard deviation control: " + str(std_c))
+    #print("Standard deviation: " + str(std))
+    #print("Lower bound: " + str(lower_bound_confidence))
+    #print("Upper bound: " + str(upper_bound_confidence))
+    #print("---------------------------------------------------------------------------------------\n\n")
 
     #Variance 1.32 and mean 1
 

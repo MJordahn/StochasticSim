@@ -1,7 +1,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-    from scipy.stats import chi2
+from scipy.stats import chi2
 from scipy.stats import norm
 
 #########################################################
@@ -87,7 +87,7 @@ print(x2[0:14]) #The period is 12
 
 ###################################################
 # We evaluate the quality of the different generators:
-#The null hypothesis: Numbers are uniformly distributed.
+# The null hypothesis: Numbers are uniformly distributed.
 
 #We compute the test statistic of the first run:
 n_obs1 = countOcc(x1, M)

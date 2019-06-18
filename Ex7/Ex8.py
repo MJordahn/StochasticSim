@@ -32,14 +32,12 @@ for i in range(n):
 cum_sum = np.cumsum(np.array(cum_sum)/float(n))
 
 # Empirical distribution:
-#plt.plot(X, cum_sum)
-#plt.show()
 #print(X)
 #print(cum_sum)
 
 ##################################################
 # Do bootstrapping:
-N = 1000
+N = 10000
 mu = np.average(X)
 ind_mat = np.random.choice(a=range(n), size=(N,n))
 bs_X = np.zeros((N,n))
@@ -53,11 +51,10 @@ for i in range(N):
     Z = np.average(bs_X[i]) - mu
     if a < Z and Z < b:
         p +=1
-
+print("---------Ex1---------- ")
 print("Bootstrap number " + str(N))
 print("Number of accepts: " + str(p))
 print("Estimate of p: " + str(p/N))
-print("-------------------------------------")
 
 ##########################################################
 # Part 2:
@@ -77,10 +74,10 @@ def medCalculation(x_obs, r):
 
 r=100
 med, mse = medCalculation(X, r)
-print("r is set to: " + str(r))
-print("The sample media is: " + str(med))
-print("The sample variance is: " + str(mse))
-print("-------------------------------------")
+#print("r is set to: " + str(r))
+#print("The sample media is: " + str(med))
+#print("The sample variance is: " + str(mse))
+#print("-------------------------------------")
 
 ###############################################################
 # We simulate N=200 Pareto distributed random variables:
@@ -93,6 +90,8 @@ P = (np.random.pareto(k, n)+np.ones(n))*beta
 med, mse = medCalculation(P, r)
 mu = np.average(P)
 mu_var = 1.0/(n-1)*sum((P-mu*np.ones(n))**2)
+print("---------Ex2---------- ")
+print("Bootstrap number " + str(r))
 print("Median estimate and bootstrap variance of median: " + str((med, mse)))
 print("Mean estimate and estiamted variance of mean: " + str((mu, mu_var)))
 print("Precision of median: " + str(1.0/mse))

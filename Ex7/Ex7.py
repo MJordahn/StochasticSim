@@ -1,10 +1,7 @@
 
-import sys
 import numpy as np
 import math
-from scipy.stats import t
 import random
-from scipy.stats import chisquare
 import matplotlib.pyplot as plt
 import scipy.io as sio
 
@@ -26,7 +23,7 @@ def permute(r, n):
     ind2 = np.random.choice(a=range(n-1))+1
     r_new[ind2] = r[ind1]
     r_new[ind1] = r[ind2]
-    return(r_new)
+    return r_new
 
 def routeCost(i_list, dist_mat):
     s = 0
@@ -142,7 +139,7 @@ for k in range(ite):
         accept = (nr <= acc_prob)
 
     if accept:
-        c+=1
+        c += 1
         route_index = new_ind
 
 ###################################################
@@ -198,9 +195,6 @@ for k in range(ite):
     if accept:
         c+=1
         route_index = new_ind
-
-#print(mat.keys())
-#print(mat['c'])
 
 print("--------Original Route - Dist mat from DTU inside---------")
 print("Original route: " + str(org_index))

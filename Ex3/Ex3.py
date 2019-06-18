@@ -21,7 +21,7 @@ U1 = np.random.rand(n)
 U2 = np.random.rand(n)
 
 ###########################################################
-# We generate values from distributions distribution:
+# We generate values from different distribution:
 
 # exponential:
 lamb = 1
