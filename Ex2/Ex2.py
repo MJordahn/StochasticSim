@@ -18,6 +18,30 @@ U = np.random.rand(n)
 
 ###########################################################
 
+def probabilities_geometric(array, n):
+    histogram = [0]*26
+    sum = 0
+    for i, k in enumerate(array):
+        if k>25:
+            sum = sum + 1
+        else:
+            histogram[int(k)] = histogram[int(k)] + 1
+    for k, prob in enumerate(histogram):
+        histogram[int(k)] = histogram[int(k)]/n
+    histogram.append(sum/n)
+    return histogram
+
+def probabilities_6point(array, n):
+    histogram = [0]*6
+    sum = 0
+    for i, k in enumerate(array):
+        histogram[int(k)-1] = histogram[int(k)-1] + 1
+    for k, prob in enumerate(histogram):
+        histogram[int(k)] = histogram[int(k)]/n
+    return histogram
+
+###########################################################
+
 def setup_Alias(F):
     smaller = []
     larger = []
@@ -36,8 +60,28 @@ def f_n(n,p):
     return r
 
 X1 = np.floor(np.log(U)*(1.0/np.log(1-p))) + np.ones(n)
+CorrectX1 = [0]
+X1 = probabilities_geometric(X1,n)
+sum = 0.0
+for i in range(1, 26):
+    value = (1-p)**(i-1)*p
+    CorrectX1.append(value)
+    sum = sum + value
+CorrectX1.append(1-sum)
 
-#plt.hist(X1, 20)
+# plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], X1)
+# plt.show()
+# plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26], CorrectX1)
+# plt.show()
+chi2sum = 0
+zipped = zip(X1, CorrectX1)
+for element in zipped:
+    if element[1] != 0:
+        chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
+
+print("P value for geometric test: " + str(1.0-chi2.cdf(chi2sum, 25)))
+
+
 
 ###########################################################
 # Simulation of a 6-point distribution:
@@ -54,7 +98,21 @@ for i in range(n):
         if (cum_dist[j] >= U[i]):
             X2[i] = j+1
             break
-plt.hist(X2)
+X2 = probabilities_6point(X2,n)
+# plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X2, width=0.25, label="generated")
+# plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
+# plt.xlabel("Point class")
+# plt.ylabel("Probability")
+# plt.legend()
+# plt.show()
+
+chi2sum = 0
+zipped = zip(X2, P_i)
+for element in zipped:
+    if element[1] != 0:
+        chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
+
+print("P value for rejection method: " + str(1.0-chi2.cdf(chi2sum, 5)))
 
 # Rejection sampling. Note that not 10000 samples are made.:
 c= 0.33
@@ -68,7 +126,22 @@ for i in range(len(U)):
     if (U2[i]< p/c):
         X3 = np.append(X3,I)
 
-#plt.hist(X3)
+X3 = probabilities_6point(X3,len(X3))
+plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
+plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
+plt.xlabel("Point class")
+plt.ylabel("Probability")
+plt.legend()
+plt.show()
+
+chi2sum = 0
+zipped = zip(X3, P_i)
+for element in zipped:
+    if element[1] != 0:
+        chi2sum = chi2sum + (element[0]-element[1])**2/element[1]
+
+print("P value for crude method: " + str(1.0-chi2.cdf(chi2sum, 5)))
+
 # Alias sampling:
 U2 = np.random.rand(n)
 X3 = np.zeros(n)
@@ -86,9 +159,6 @@ while len(S)!=0:
         del G[0]
         S.append(k)
 
-print(F)
-print(L)
-print(I_list)
 for i, u in enumerate(U2):
     if u <= F[int(I_list[i])]:
         X3 = int(I_list[i])

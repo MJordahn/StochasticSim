@@ -35,11 +35,12 @@ def probabilities_2d(array1, array2, n):
 
 
 def main():
+    print("-------------------1D Simulation---------------------")
     _lambda = 1
     _mean_service_time = 8
     s_nr = 10
     A = 1*8
-    n = 100
+    n = 10000
     states = [1]
     for i in range(0, n-1):
         accept = False
@@ -62,6 +63,8 @@ def main():
             states.append(states[-1])
 
     plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], probabilities(states,n))
+    plt.xlabel("Busy service units")
+    plt.ylabel("Probability")
     plt.show()
 
     stations = []
@@ -74,6 +77,8 @@ def main():
 
 
     plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stations)
+    plt.xlabel("Busy service units")
+    plt.ylabel("Probability")
     plt.show()
 
     print(chisquare(probabilities(states,n), f_exp=stations))
@@ -129,8 +134,6 @@ def main():
             states_i.append(states_i[-1])
             states_j.append(states_j[-1])
 
-    # plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], probabilities(states_combined,n))
-    # plt.show()
     reference_grid = [[""]*11]*11
     prob_mat, deleteGrid, deleteMap = probabilities_2d(states_i, states_j, n)
     stations = [[0]*11]*11
@@ -151,18 +154,13 @@ def main():
         sumProbTheoretical = sumProbTheoretical + A_j**j*A_i**i/math.factorial(i)/math.factorial(j)
         sumProbCalculated = sumProbCalculated + value
 
-
     stations = stations / np.linalg.norm(stations)
-    # plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stations)
-    # plt.show()
     chi2sum = 0
     for i, row in enumerate(prob_mat):
         for j, cell in enumerate(row):
             if not deleteGrid[i][j]:
                 chi2sum = chi2sum + (cell-stations[i][j])**2/stations[i][j]
     chi2sum = chi2sum + (sumProbCalculated-sumProbTheoretical)**2/sumProbTheoretical
-
-
 
     print(1.0-chi2.cdf(chi2sum, 65-deletedClasses))
 
@@ -234,18 +232,13 @@ def main():
         sumProbTheoretical = sumProbTheoretical + A_j**j*A_i**i/math.factorial(i)/math.factorial(j)
         sumProbCalculated = sumProbCalculated + value
 
-
     stations = stations / np.linalg.norm(stations)
-    # plt.bar([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], stations)
-    # plt.show()
     chi2sum = 0
     for i, row in enumerate(prob_mat):
         for j, cell in enumerate(row):
             if not deleteGrid[i][j]:
                 chi2sum = chi2sum + (cell-stations[i][j])**2/stations[i][j]
     chi2sum = chi2sum + (sumProbCalculated-sumProbTheoretical)**2/sumProbTheoretical
-
-
 
     print(1.0-chi2.cdf(chi2sum, 65-deletedClasses))
 
