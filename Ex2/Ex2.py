@@ -170,12 +170,12 @@ for element in zipped:
     else:
         X3.append(L[int(element[1])-1])
 X3 = probabilities_6point(X3,len(X3))
-plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
-plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
-plt.xlabel("Point class")
-plt.ylabel("Probability")
-plt.legend()
-plt.show()
+# plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
+# plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
+# plt.xlabel("Point class")
+# plt.ylabel("Probability")
+# plt.legend()
+# plt.show()
 
 chi2sum = 0
 zipped = zip(X3, P_i)
