@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import chi2
 from scipy.stats import norm
+import random
 
 #########################################################
 def LCG(x, a, c, M):
@@ -60,7 +61,22 @@ def run2(lst):
         R[tempLen] += 1
     return R
 
-def correlationTest(lst):
+def runTest2Counter(lst):
+    runLengths = [0]*6
+    counter = 0
+    for i, value in enumerate(lst):
+        if i>0 and counter > 0:
+            if value > lst[i-1]:
+                counter = counter + 1
+            else:
+                if counter >= 6:
+                    runLengths[5] += 1
+                else:
+                    runLengths[counter-1] += 1
+                counter = 0
+        else:
+            counter += 1
+    return runLengths
 
 ####################################################
 # We generate 10000 numbers:
@@ -157,7 +173,7 @@ t1 = n1_1*n2_1
 var1 = 2*t1*(2*t1 - n1_1 - n2_1)/((n1_1+n2_1)**2*(n1_1+n2_1-1))
 
 #n1_1 is the test statistic.
-print("Conradsen run test for run 1: " + str(norm.cdf(n1_1, loc=mean1, scale=np.sqrt(var1)))
+print("Conradsen run test for run 1: " + str(norm.cdf(n1_1, loc=mean1, scale=np.sqrt(var1))))
 
 #Testing second batch:
 median = np.median(x2)
@@ -171,11 +187,38 @@ var2 = 2*t2*(2*t2 - n1_2 - n2_2)/((n1_2+n2_2)**2*(n1_2+n2_2-1))
 print("Conradsen run test for run 2: " + str(norm.cdf(n1_2, loc=mean2, scale=np.sqrt(var2))))
 
 ###################################################################
-#Run test II:
-
-
-
-
+# #Run test II:
+#
+# U1 = np.random.rand(len(x1))
+#
+# A =[[4529.4, 9044.9, 13568, 18091, 22615, 27892],
+#     [9044.9, 18097, 27139, 36187, 45234, 55789],
+#     [13568, 27139, 40721, 54281, 67852, 83685],
+#     [18091, 36187, 54281, 72414, 90470, 111580],
+#     [22615, 45234, 67852, 90470, 113262, 139476],
+#     [27892, 55789, 83685, 111580, 139476, 172860]]
+#
+# R = runTest2Counter(U1)
+# n = len(x1)
+#
+# B = [1.0/6*n, 5.0/24*n, 11.0/120*n, 19.0/720*n, 29.0/5040*n, 1.0/840*n]
+# mult = np.transpose(np.subtract(R,B)).dot(A).dot((np.subtract(R,B)))
+# Z = 1.0/(n-6)*mult
+# print("Run test II for run 1: " + str(1.0-chi2.cdf(Z, 6)))
+#
+# A =[[4529.4, 9044.9, 13568, 18091, 22615, 27892],
+#     [9044.9, 18097, 27139, 36187, 45234, 55789],
+#     [13568, 27139, 40721, 54281, 67852, 83685],
+#     [18091, 36187, 54281, 72414, 90470, 111580],
+#     [22615, 45234, 67852, 90470, 113262, 139476],
+#     [27892, 55789, 83685, 111580, 139476, 172860]]
+# R = runTest2Counter(U2)
+#
+# n = len(U2)
+# B = [1.0/6*n, 5.0/24*n, 11.0/120*n, 19.0/720*n, 29.0/5040*n, 1.0/840*n]
+# mult = np.transpose(np.subtract(R,B)).dot(A).dot((np.subtract(R,B)))
+# Z = 1.0/(n-6)*mult
+# print("Run test II for run 2: " + str(1.0-chi2.cdf(Z, 6)))
 
 
 
