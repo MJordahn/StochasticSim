@@ -47,9 +47,9 @@ def setup_Alias(F):
     larger = []
     for i, prob in enumerate(F):
         if prob <= 1.0:
-            smaller.append(i)
+            smaller.append(i+1)
         else:
-            larger.append(i)
+            larger.append(i+1)
     return smaller, larger
 
 ###########################################################
@@ -87,6 +87,7 @@ print("P value for geometric test: " + str(1.0-chi2.cdf(chi2sum, 25)))
 # Simulation of a 6-point distribution:
 
 P_i = np.array([7.0/48, 5.0/48, 1.0/8.0, 1.0/16, 1.0/4, 5.0/16])
+#P_i = np.array([17.0/96, 1.0/12, 1.0/3.0, 1.0/4, 1.0/24, 11.0/96])
 
 # Crude method:
 X2 = np.zeros(n)
@@ -152,14 +153,15 @@ S, G = setup_Alias(F)
 while len(S)!=0:
     k = G[0]
     j = S[0]
-    L[j] = k
-    F[k] = F[k] - (1-F[j])
+    L[j-1] = k
+    F[k-1] = F[k-1] - (1-F[j-1])
 
-    if F[k] < 1:
+    if F[k-1] < 1:
         S.append(k)
         del G[0]
     del S[0]
-
+print(F)
+print(L)
 zipped = zip(U2, I_list)
 X3 = []
 for element in zipped:
@@ -167,7 +169,6 @@ for element in zipped:
         X3.append(int(element[1]))
     else:
         X3.append(L[int(element[1])-1])
-print(X3)
 X3 = probabilities_6point(X3,len(X3))
 plt.bar([1-.125, 2-.125, 3-.125, 4-.125, 5-.125, 6-.125], X3, width=0.25, label="generated")
 plt.bar([1+.125, 2+.125, 3+.125, 4+.125, 5+.125, 6+.125], P_i, color="r", width=0.25, label="theoretical")
