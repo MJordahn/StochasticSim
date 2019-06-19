@@ -21,6 +21,7 @@ def runSim(seed, a, c, M, p):
 
     if True:
         plt.hist(x, range(int(M)+1))
+        plt.show()
 
     return(x)
 
@@ -58,6 +59,9 @@ def run2(lst):
     if tempLen != 0:
         R[tempLen] += 1
     return R
+
+def correlationTest(lst):
+
 ####################################################
 # We generate 10000 numbers:
 seed=0
@@ -94,7 +98,7 @@ n_obs1 = countOcc(x1, M)
 n_ex1 = 10000.0/M
 T1=np.dot((n_obs1-n_ex1*np.ones(int(M))), (n_obs1-n_ex1*np.ones(int(M))))/n_ex1
 #p-value:
-1-chi2.cdf(T1, M-1)
+print(1-chi2.cdf(T1, M-1))
 #accept
 
 #We compute the test statistic of the second run:
@@ -102,16 +106,18 @@ n_obs2 = countOcc(x2, M)
 n_ex2 = 10000.0/M
 T2=np.dot((n_obs2-n_ex2*np.ones(M)), (n_obs2-n_ex2*np.ones(M)))/n_ex2
 #p-value:
-1-chi2.cdf(T2, M-1)
+print(1-chi2.cdf(T2, M-1))
 #reject
 
 #################################################################
 
 c1 = np.cumsum(n_obs1)*(1.0/10000)
 plt.plot(range(M),(np.cumsum(n_obs1)*(1.0/10000)))
+plt.show()
 
 c2 = np.cumsum(n_obs2)*(1.0/10000)
 plt.plot(range(M),np.cumsum(n_obs2)*(1.0/10000))
+plt.show()
 
 #We compute the test statistic for the Kolmogorov test:
 diff1 = c1-np.cumsum(np.ones(M, dtype=float))*(1.0/13.0)
@@ -151,7 +157,7 @@ t1 = n1_1*n2_1
 var1 = 2*t1*(2*t1 - n1_1 - n2_1)/((n1_1+n2_1)**2*(n1_1+n2_1-1))
 
 #n1_1 is the test statistic.
-norm.cdf(n1_1, loc=mean1, scale=np.sqrt(var1))
+print("Conradsen run test for run 1: " + str(norm.cdf(n1_1, loc=mean1, scale=np.sqrt(var1)))
 
 #Testing second batch:
 median = np.median(x2)
@@ -162,7 +168,20 @@ t2 = n1_2*n2_2
 var2 = 2*t2*(2*t2 - n1_2 - n2_2)/((n1_2+n2_2)**2*(n1_2+n2_2-1))
 
 #n1_1 is the test statistic.
-norm.cdf(n1_2, loc=mean2, scale=np.sqrt(var2))
+print("Conradsen run test for run 2: " + str(norm.cdf(n1_2, loc=mean2, scale=np.sqrt(var2))))
+
+###################################################################
+#Run test II:
+
+
+
+
+
+
+
+
+
+
 
 ###################################################################
 #extra stuff
